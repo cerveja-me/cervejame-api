@@ -16,7 +16,7 @@ server.use(bodyParser.urlencoded({extended: true}))
 server.use(bodyParser.json())
 server.use(cors())
 server.use(helmet())
-server.use('/api/v2', router)
+server.use('/api/', router)
 server.use((err, req, res, next) => {
   res.status(err.status).json(err)
 })
