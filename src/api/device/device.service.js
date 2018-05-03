@@ -39,7 +39,7 @@ export async function deviceAssignment (profile, deviceId) {
     } else {
       const updateProfileDevice = new PreparedStatement('update-profile-device', UPDATE_PROFILE_ID_ON_DEVICE)
       updateProfileDevice.values = [profile.id, deviceId]
-      await db.one(updateProfileDevice)
+      await db.oneOrNone(updateProfileDevice)
       return true
     }
   } catch (error) {
