@@ -111,7 +111,7 @@ export function confirmSale (idLocation, idProductZone, price, amount, amountDis
   //   })
   // })
 }
-export function findSaleOnSalePaymet (id_sale) {
+export function findSaleOnSalePaymet (idSale) {
   // return new Promise((resolve, reject) => {
   //   pool.connect((err, client, done) => {
   //     if (err) {

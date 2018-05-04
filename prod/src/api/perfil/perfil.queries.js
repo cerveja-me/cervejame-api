@@ -1,0 +1,1 @@
+'use strict';Object.defineProperty(exports,'__esModule',{value:true});const INSERT_PERFIL=exports.INSERT_PERFIL='INSERT INTO perfil(email, senha, ativo) values ($1, $2, $3) RETURNING id, email, ativo, criado_em, atualizado_em';const SELECT_PERFIL_POR_EMAIL=exports.SELECT_PERFIL_POR_EMAIL='SELECT id, email, ativo, criado_em, atualizado_em FROM perfil WHERE email = $1';

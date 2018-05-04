@@ -1,0 +1,2 @@
+'use strict';Object.defineProperty(exports,'__esModule',{value:true});var _device=require('./device.controller');var _express=require('express');var _express2=_interopRequireDefault(_express);function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{default:obj}}const router=_express2.default.Router();router.post('/',_device.createDevice);// router.get('/:id', getUserById)
+exports.default=router;

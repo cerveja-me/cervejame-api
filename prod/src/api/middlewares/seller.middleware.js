@@ -1,0 +1,1 @@
+'use strict';Object.defineProperty(exports,'__esModule',{value:true});exports.sellerMiddleware=sellerMiddleware;var _seller=require('../seller/seller.service');function sellerMiddleware(req,res,next){if(req.decoded){(0,_seller.getSellerFromProfile)(req.decoded).then(seller=>{req.seller=seller;next()})}}

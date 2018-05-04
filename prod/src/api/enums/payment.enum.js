@@ -1,0 +1,1 @@
+'use strict';Object.defineProperty(exports,'__esModule',{value:true});const paymentConstant=exports.paymentConstant={CASH:{code:1,message:'Dinheiro'},CREDIT_CARD:{code:2,message:'Cart\xE3o de Cr\xE9dito'},APP_CREDIT_CARD:{code:3,message:'Via Cerveja-me'},BEER_COIN:{code:4,message:'Beer-coin'}};

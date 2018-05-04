@@ -1,0 +1,1 @@
+'use strict';Object.defineProperty(exports,'__esModule',{value:true});const apiTransactionMessage=exports.apiTransactionMessage={TRANSACTION_COMMITED:{code:1000,message:'Transa\xE7\xE3o efetuada com sucesso',flag:true},TRANSACTION_ERROR:{code:1001,message:'Erro ao realizar transa\xE7\xE3o',flag:false}};
