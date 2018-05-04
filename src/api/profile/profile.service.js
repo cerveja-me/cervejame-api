@@ -6,6 +6,7 @@ import { CREATE_PROFILE, FINDONE_BY_ID, FINDONE_BY_LOGIN } from './profile.query
 import { deviceAssignment } from '../device/device.service'
 import { PreparedStatement } from 'pg-promise'
 import db from '../../db/db'
+import ErrorHandler from '../../handlers/errorHandler'
 
 if (process.env.NODE_ENV === 'development') {
   dotenv.config()
@@ -40,6 +41,6 @@ export async function auth (credential, password, deviceId, type) {
     await deviceAssignment(profile, deviceId)
     return jwt.sign({ profile }, secret, { expiresIn: '365d' })
   } catch (error) {
-    throw new Error('Usuário e/ou senha inválidos')
+    throw new ErrorHandler('Usuário e/ou senha inválidos')
   }
 }

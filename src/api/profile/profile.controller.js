@@ -38,7 +38,7 @@ export async function authenticate (req, res, next) {
   const { login, password, device_id, type } = req.body
   try {
     let token = await auth(login, password, device_id, type)
-    res.json(token)
+    res.json({token: token})
   } catch (error) {
     next(error)
   }
