@@ -1,1 +1,0 @@
-'use strict';Object.defineProperty(exports,'__esModule',{value:true});const profileConstant=exports.profileConstant={FORM:{code:1,message:'Formul\xE1rio'},FACEBOOK:{code:2,message:'Facebook'},SELLER:{code:3,message:'Vendedor'}};
