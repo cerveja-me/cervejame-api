@@ -5,7 +5,6 @@ import locationRouter from '../api/location/location.router'
 import voucherRouter from '../api/voucher/voucher.router'
 import costumerRouter from '../api/costumer/costumer.router'
 import saleRouter from '../api/sale/sale.router'
-var pjson = require('../../package.json')
 
 const router = express.Router()
 
@@ -21,6 +20,6 @@ router.use('/costumer', costumerRouter)
 router.use('/sale', saleRouter)
 
 router.use('/', (req, res) => {
-  res.send('OK V' + pjson.version)
+  res.send('OK')
 })
 export default router
