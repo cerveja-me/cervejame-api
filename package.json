@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "NODE_ENV=development nodemon --exec babel-node src/index.js --presets env",
     "build": "npm run clean && babel . -d prod --minified --ignore node_modules,cfg,.babelrc,.git,.gitignore,api_v2.sql,bd_relations.xml,table_creation.sql,view_creation.sql,README.md,license.txt,package.json,package-lock.json,.env,.env.example,.eslintrc.js --preset=env --copy-files",
-    "start": "NODE_ENV=production node prod/src/index.js",
+    "start": "node prod/src/index.js",
     "clean": "rm -rf prod",
     "test": "NODE_ENV=development jest --watch",
     "coverage": "jest --coverage"
