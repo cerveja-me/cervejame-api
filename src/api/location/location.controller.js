@@ -5,8 +5,8 @@ export async function createLocation (req, res, next) {
   try {
     let l = await insertLocation(id_device, position_gps)
     try {
-      l.zone = await findZone(l)
-      l.zone = transformTime(l.zone, time)
+      l = await findZone(l)
+      l = transformTime(l, time)
     } catch (error) {
       res.json(l)
     }
