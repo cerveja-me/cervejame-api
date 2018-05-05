@@ -18,7 +18,7 @@ export async function createLocation (req, res, next) {
 export async function locationChanged (req, res, next) {
   console.log('location update', req.body)
 
-  const location = {
+  let location = {
     id: req.params.id,
     position_maps: req.body.position_maps || req.body.position_gps,
     street: req.body.street || '',
@@ -30,9 +30,9 @@ export async function locationChanged (req, res, next) {
     console.log('location update', location)
     await updateLocation(location)
     try {
-      // location.zone = await findZone(location)
-      // location.zone = transformTime(location.zone,time)
-      res.json(await findZone(location))
+      location = await findZone(location)
+      location.zone = transformTime(location.zone, time)
+      res.json(location)
     } catch (e) {
       res.json(location)
     }
