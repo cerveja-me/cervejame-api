@@ -55,6 +55,14 @@ export async function CheckoutSaleV2 (req, res, next) {
   // console.log('venda->', idSale, sale, profile)
   // next()
 }
+export async function GetSalesV2 (req, res, next) {
+  try {
+    const profile = req.decoded
+    res.send(await getSales(profile.profile.id))
+  } catch (error) {
+    next(error)
+  }
+}
 
 export function CheckoutSale (req, res) {
   const idSale = req.params.id

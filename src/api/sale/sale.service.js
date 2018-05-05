@@ -157,24 +157,13 @@ export function findSaleOnSalePaymet (idSale) {
   // })
 }
 
-export function getSales (userId) {
-  // console.log('id_', userId)
-  // return new Promise((resolve, reject) => {
-  //   pool.connect((err, client, done) => {
-  //     if (err) {
-  //       done()
-  //       reject(err)
-  //     }
-  //     client.query(GET_SALES, [userId], (err, result) => {
-  //       if (err) {
-  //         done()
-  //         reject(err)
-  //       }
-  //       done()
-  //       resolve(result.rows)
-  //     })
-  //   })
-  // })
+export async function getSales (userId) {
+  try {
+    const openSales = new PreparedStatement('open-sales', GET_SALES, [userId])
+    return await db.one(openSales)
+  } catch (error) {
+    console.log('ERRRRRROOUUU -> ', error)
+  }
 }
 
 export function getSaleDetails (idsale) {

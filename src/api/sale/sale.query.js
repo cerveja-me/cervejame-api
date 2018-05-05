@@ -2,7 +2,7 @@ export const CREATE_SALE = 'insert into sale (id_location,id_product_zone,price,
 export const CONFIRM_SALE = `update public.sale set id_location=$1, id_product_zone=$2, price=$3, amount=$4, amount_discount=$5, updateat=${new Date()} where id=$6`
 export const CREATE_SALE_ACTION = 'insert into public.action(id_sale, action) values ($1, $2) RETURNING id'
 export const CREATE_SALE_PAYMENT = 'insert into public.sale_payment(id_sale, payment_type, payment_value) values ($1, $2, $3) RETURNING id'
-export const GET_SALES = 'select * from view_get_sales where id_profile = $1 limit 5'
+export const GET_SALES = 'select * from view_get_sales where id_profile = $1 limit 1'
 export const SALE_DATA = `select c.name as costumer,c.phone as phone, p.name as product, d.push_token,s.amount,sp.payment_value as price,z.name as city  from sale s
 left join product_zone pz on pz.id= s.id_product_zone
 left join zone z on z.id = pz.id_zone
