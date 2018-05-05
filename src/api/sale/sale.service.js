@@ -34,17 +34,17 @@ export function createSale (sale) {
 }
 
 export async function createSaleV2 (sale) {
-  const price = sale.products.map(p => { return p.price * p.amount }).reduce((a, b) => { return a + b })
-  const amount = sale.products.map(p => { return p.amount }).reduce((a, b) => { return a + b })
-  const insertSale = new PreparedStatement('insert-sale', CREATE_SALE, [sale.location, sale.products[0].id, price, amount, sale.amount_discount, sale.freight_value])
+  const price = sale.icebox.map(p => { return p.price * p.items }).reduce((a, b) => { return a + b })
+  const items = sale.icebox.map(p => { return p.items }).reduce((a, b) => { return a + b })
+  const insertSale = new PreparedStatement('insert-sale', CREATE_SALE, [sale.location, sale.icebox[0].id, price, items, sale.amount_discount || 0, sale.freight_value])
   try {
     const r = await db.one(insertSale)
-    const inserts = sale.products.map(p => {
-      const insertProduct = new PreparedStatement('insert-product-sale', INSERT_PRODUCT_ON_SALE, [r.id, p.id, p.price, p.amount, p.price * p.amount, 0])
+    const inserts = sale.icebox.map(p => {
+      const insertProduct = new PreparedStatement('insert-product-sale', INSERT_PRODUCT_ON_SALE, [r.id, p.id, p.price, p.items, p.price * p.items, 0])
       db.oneOrNone(insertProduct)
     })
     await Promise.all(inserts)
-    console.log('sale -> ', sale.products, price, amount, r)
+    console.log('sale -> ', sale.icebox, price, items, r)
 
     return r
   } catch (error) {
