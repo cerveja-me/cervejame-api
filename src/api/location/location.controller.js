@@ -16,6 +16,8 @@ export async function createLocation (req, res, next) {
 }
 
 export async function locationChanged (req, res, next) {
+  console.log('location update', req.body)
+
   const location = {
     id: req.params.id,
     position_maps: req.body.position_maps || req.body.position_gps,
@@ -25,6 +27,7 @@ export async function locationChanged (req, res, next) {
   }
 
   try {
+    console.log('location update', location)
     await updateLocation(location)
     try {
       location.zone = await findZone(location)
