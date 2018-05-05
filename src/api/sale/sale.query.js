@@ -18,3 +18,4 @@ export const FIND_SALE_ON_PAYMENT = 'select * from sale_payment where id_sale = 
 export const INSERT_PRODUCT_ON_SALE = `INSERT INTO public.productsale(
 id_sale, id_productzone, price, amount, total, amount_discount)
 VALUES ($1, $2, $3, $4, $5, $6)`
+export const SALE_BY_ID = `select * from sale where id = $1`

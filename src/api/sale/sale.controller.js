@@ -8,7 +8,9 @@ import {
   createSalePayment,
   findSaleOnSalePaymet,
   getSales,
-  createSaleV2
+  createSaleV2,
+  validadePayment,
+  getSaleInfo
 } from './sale.service'
 import {
   applyVoucher,
@@ -33,6 +35,25 @@ export async function CreateSaleReqV2 (req, res, next) {
   } catch (error) {
     res.status(httpStatus.BAD_REQUEST).json(error)
   }
+}
+
+export async function CheckoutSaleV2 (req, res, next) {
+  const idSale = req.params.id
+  const sale = req.body
+  const profile = req.decoded
+
+  try {
+    await validadePayment(sale)
+    // TODO validar se a venda já esta no pagamento
+    const savedSale = await getSaleInfo(idSale)
+    await createSalePayment(idSale, sale.payment, (parseFloat(savedSale.price) + parseFloat(savedSale.freight_value)))
+    console.log('saved', savedSale, sale)
+    res.send(savedSale)
+  } catch (error) {
+    next(error)
+  }
+  // console.log('venda->', idSale, sale, profile)
+  // next()
 }
 
 export function CheckoutSale (req, res) {

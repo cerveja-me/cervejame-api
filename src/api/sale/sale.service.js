@@ -7,13 +7,17 @@ import {
   GET_SALES,
   SALE_DATA,
   FIND_SALE_ON_PAYMENT,
-  INSERT_PRODUCT_ON_SALE
+  INSERT_PRODUCT_ON_SALE,
+  SALE_BY_ID
 } from './sale.query'
 import {
   apiTransactionMessage
 } from '../enums/transactionMessage.enum'
 import db from '../../db/db'
 import { PreparedStatement } from 'pg-promise'
+import ErrorHandler from '../../handlers/errorHandler'
+import httpStatus from 'http-status'
+import { apiErrorMessageConstant } from '../enums/apiErrorMessage.enum'
 
 export function createSale (sale) {
   // return new Promise((resolve, reject) => {
@@ -52,6 +56,50 @@ export async function createSaleV2 (sale) {
   }
 }
 
+export async function validadePayment (sale) {
+  if (sale.payment === 1 || sale.payment === 2) {
+    return true
+  } else {
+    let e = apiErrorMessageConstant.INVALID_PAYMENT
+    throw new ErrorHandler(e.message, e.status, true, e.code)
+  }
+}
+
+export async function getSaleInfo (id) {
+  const getSale = new PreparedStatement('get-sale', SALE_BY_ID, [id])
+  try {
+    return await db.one(getSale)
+  } catch (error) {
+    // throw
+  }
+}
+
+export async function createSalePayment (idSale, paymentType, paymentValue) {
+  const salePayment = new PreparedStatement('sale-payment', CREATE_SALE_PAYMENT, [idSale, paymentType, paymentValue])
+  try {
+    return await db.one(salePayment)
+  } catch (error) {
+
+  }
+  // return new Promise((resolve, reject) => {
+  //   const queryData = [idSale, paymentType, paymentValue]
+  //   pool.connect((err, client, done) => {
+  //     if (err) {
+  //       done()
+  //       reject(err)
+  //     }
+  //     client.query(CREATE_SALE_PAYMENT, queryData, (err, result) => {
+  //       if (err) {
+  //         done()
+  //         reject(err)
+  //       }
+  //       done()
+  //       resolve(apiTransactionMessage.TRANSACTION_COMMITED)
+  //     })
+  //   })
+  // })
+}
+
 export function createSaleAction (idSale, action) {
   // return new Promise((resolve, reject) => {
   //   const queryData = [idSale, action]
@@ -67,26 +115,6 @@ export function createSaleAction (idSale, action) {
   //       }
   //       done()
   //       resolve(result.rows[0])
-  //     })
-  //   })
-  // })
-}
-
-export function createSalePayment (idSale, paymentType, paymentValue) {
-  // return new Promise((resolve, reject) => {
-  //   const queryData = [idSale, paymentType, paymentValue]
-  //   pool.connect((err, client, done) => {
-  //     if (err) {
-  //       done()
-  //       reject(err)
-  //     }
-  //     client.query(CREATE_SALE_PAYMENT, queryData, (err, result) => {
-  //       if (err) {
-  //         done()
-  //         reject(err)
-  //       }
-  //       done()
-  //       resolve(apiTransactionMessage.TRANSACTION_COMMITED)
   //     })
   //   })
   // })
