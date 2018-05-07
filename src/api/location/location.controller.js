@@ -6,7 +6,8 @@ export async function createLocation (req, res, next) {
     let l = await insertLocation(id_device, position_gps)
     try {
       l = await findZone(l)
-      l = transformTime(l, time)
+      l.zone = await transformTime(l.zone, time)
+      res.json(l)
     } catch (error) {
       res.json(l)
     }
@@ -16,7 +17,7 @@ export async function createLocation (req, res, next) {
 }
 
 export async function locationChanged (req, res, next) {
-  const location = {
+  let location = {
     id: req.params.id,
     position_maps: req.body.position_maps || req.body.position_gps,
     street: req.body.street || '',
@@ -25,10 +26,10 @@ export async function locationChanged (req, res, next) {
   }
 
   try {
+    console.log('location update', location)
     await updateLocation(location)
     try {
-      location.zone = await findZone(location)
-      // location.zone = transformTime(location.zone,time)
+      location = await findZone(location)
       res.json(location)
     } catch (e) {
       res.json(location)

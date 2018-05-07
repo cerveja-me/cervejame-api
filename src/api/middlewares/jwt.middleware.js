@@ -25,18 +25,19 @@ export function decodeToken (token) {
   return jwt.decode(token)
 }
 
-export function jwtMiddleware (req, res, next) {
+export async function jwtMiddleware (req, res, next) {
   if (req.headers && req.headers.authorization) {
     const token = req.headers.authorization.split(' ')[1]
-    validateToken(token).then(valid => {
+    try {
+      let valid = await validateToken(token)
       valid ? console.log('valido') : console.log('invalido')
-      req.decoded = jwt.decode(token)
+      req.decoded = await jwt.decode(token)
       next()
-    }).catch(error => {
+    } catch (error) {
       next(error)
       // console.log(error)
       // res.status(401).json({code: apiErrorMessageConstant.EXPIRED_OR_INVALID_TOKEN.code, message: apiErrorMessageConstant.EXPIRED_OR_INVALID_TOKEN.message})
-    })
+    }
   } else {
     res.status(401).json(apiErrorMessageConstant.NO_TOKEN_SUPPLIED)
   }

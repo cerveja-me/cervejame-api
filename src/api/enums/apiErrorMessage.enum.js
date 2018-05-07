@@ -22,5 +22,11 @@ export const apiErrorMessageConstant = {
     message: 'Token inválido ou expirado',
     title: 'Inválido',
     httpStatus: 403
+  },
+  INVALID_PAYMENT: {
+    code: 1002,
+    message: 'Pagamento não informado',
+    title: 'Inválido',
+    httpStatus: 401
   }
 }
