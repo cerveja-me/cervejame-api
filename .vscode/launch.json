@@ -1,0 +1,33 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "nodemon",
+            "runtimeExecutable": "nodemon",
+            "program": "${workspaceFolder}/src/index.js",
+            "env": {
+                "JWT_SECRET":"27c1eabe8d71b5f0c13b4a7d3ff5e34eeded8474",
+                "DB_USER":"postgres",
+                "DB_PASS":"postgres",
+                "DB_HOST":"localhost",
+                "DB_PORT":"32768",
+                "DB_DATABASE":"api_v2",
+                "DB_DEV":"api_v2",
+                "DB_TEST":"api_v2",
+                "DB_HOMOLOG":"api_v2",
+                "API_PORT":"9001",
+                "NODE_ENV":"development",
+                "API_MQ_URL":"http://ec2-18-231-96-235.sa-east-1.compute.amazonaws.com:8081" 
+            },
+            
+            "restart": true,
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen"
+        }
+    ]
+}

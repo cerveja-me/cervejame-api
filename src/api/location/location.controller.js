@@ -2,6 +2,7 @@ import { insertLocation, findZone, updateLocation, transformTime } from './locat
 
 export async function createLocation (req, res, next) {
   const { id_device, position_gps, time } = req.body
+  console.log('time -> ', time)
   try {
     let l = await insertLocation(id_device, position_gps)
     try {
