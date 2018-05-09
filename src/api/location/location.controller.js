@@ -33,7 +33,7 @@ export async function locationChanged (req, res, next) {
     await updateLocation(location)
     try {
       location = await findZone(location)
-      l.zone = await transformTime(location.zone, time)
+      location.zone = await transformTime(location.zone, time)
       res.json(location)
     } catch (e) {
       res.json(location)
