@@ -51,8 +51,6 @@ export async function updateLocation (location) {
 export function transformTime (zone, time) {
   const base = new Date(time)
   const date = new Date(base.toString())
-  console.log('FIlho da puta->', base, date)
-
   date.setHours(0, 0, 0, 0)
   date.setDate(date.getDate() - date.getDay())
   zone.open = false
@@ -62,13 +60,13 @@ export function transformTime (zone, time) {
     sch.open = new Date(sch.open.setHours(sch.start.split(':')[0], sch.start.split(':')[1], 0, 0))
     sch.close = new Date(sch.open)
     sch.close.setHours(sch.close.getHours() + parseInt(sch.end))
-    // if (base.getTime() > sch.open.getTime() && base.getTime() < sch.close.getTime()) {
-    //   sch.active = true
-    //   zone.open = true
-    // } else {
-    //   sch.active = false
-    // }
-    // sch.day = base.getDay() === sch.open.getDay()
+    if (base.getTime() > sch.open.getTime() && base.getTime() < sch.close.getTime()) {
+      sch.active = true
+      zone.open = true
+    } else {
+      sch.active = false
+    }
+    sch.day = base.getDay() === sch.open.getDay()
     return sch
   })
   // TODO check if open yestarday or today  
