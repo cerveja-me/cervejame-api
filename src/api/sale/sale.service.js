@@ -18,7 +18,10 @@ import { PreparedStatement } from 'pg-promise'
 import ErrorHandler from '../../handlers/errorHandler'
 import httpStatus from 'http-status'
 import { apiErrorMessageConstant } from '../enums/apiErrorMessage.enum'
-
+import {
+  voucherRules,
+  createSaleVoucher
+} from '../voucher/voucher.services'
 export function createSale (sale) {
   // return new Promise((resolve, reject) => {
   //   pool.connect((err, client, done) => {
@@ -71,6 +74,19 @@ export async function getSaleInfo (id) {
     return await db.one(getSale)
   } catch (error) {
     // throw
+  }
+}
+export async function validateVoucher (sale, saleSaved, profile) {
+  console.log('VALIDAR REGRAS', sale, saleSaved, profile)
+  if (!sale.voucher) {
+    return 0
+  }
+  try {
+    await voucherRules(saleSaved, sale.voucher, profile)
+    await createSaleVoucher(saleSaved, sale.voucher, profile)
+    return sale.voucher.value
+  } catch (error) {
+    throw error
   }
 }
 
@@ -139,7 +155,7 @@ export function confirmSale (idLocation, idProductZone, price, amount, amountDis
   //   })
   // })
 }
-export function findSaleOnSalePaymet (idSale) {
+export async function findSaleOnSalePaymet (idSale) {
   // return new Promise((resolve, reject) => {
   //   pool.connect((err, client, done) => {
   //     if (err) {
