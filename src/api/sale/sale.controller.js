@@ -11,7 +11,8 @@ import {
   createSaleV2,
   validadePayment,
   getSaleInfo,
-  validateVoucher
+  validateVoucher,
+  validateReferral
 } from './sale.service'
 import {
   applyVoucher,
@@ -49,12 +50,11 @@ export async function CheckoutSaleV2 (req, res, next) {
     const savedSale = await getSaleInfo(idSale)
     console.log('VENDA -> ', sale)
     const voucherDiscount = await validateVoucher(sale, savedSale, profile)
-    console.log('descont -> ', voucherDiscount)
+    const referralDiscount = await validateReferral(sale, savedSale, profile)
+    console.log('descont -> ', voucherDiscount, referralDiscount)
 
-    // const referralDiscount = await getReffarelDiscount()
-
-    await createSalePayment(idSale, sale.payment, (parseFloat(savedSale.price) + parseFloat(savedSale.freight_value) - voucherDiscount))
-    // console.log('saved', savedSale, sale)
+    await createSalePayment(idSale, sale.payment, (parseFloat(savedSale.price) + parseFloat(savedSale.freight_value) - voucherDiscount - referralDiscount))
+    console.log('saved', savedSale, sale)
     res.send(savedSale)
   } catch (error) {
     next(error)

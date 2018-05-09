@@ -80,8 +80,7 @@ export async function createSaleVoucher (sale, voucher, profile) {
     const insertSaleVoucher = new PreparedStatement('insert-sale-voucher', CREATE_SALE_VOUCHER, [sale.id, voucher.id, voucher.value])
     let r = await db.oneOrNone(insertSaleVoucher)
     if (voucher.rule === ruleConstant.FRIEND_REF.code) {
-      const inserVoucherDebit = new PreparedStatement('insert-voucher-debit', CREATE_VOUCHER_DEBIT, [sale.id, voucher.id, 10])
-      await db.oneOrNone(inserVoucherDebit)
+      createVoucherDebit(sale.id, voucher.id, 10)
     }
     return r
   } catch (error) {
@@ -89,22 +88,11 @@ export async function createSaleVoucher (sale, voucher, profile) {
   }
 }
 
-// TODO
-// export function createVoucherDebit (sale, referral, value) {
-//   return new Promise((resolve, reject) => {
-//     pool.connect((err, client, done) => {
-//       if (err) {
-//         done()
-//         reject(new Error(err.message))
-//       }
-//       pool.query(CREATE_VOUCHER_DEBIT, [sale, referral, value], (err, result) => {
-//         if (err) {
-//           done()
-//           reject(new Error(err.message))
-//         }
-//         done()
-//         resolve(apiTransactionMessage.TRANSACTION_COMMITED)
-//       })
-//     })
-//   })
-// }
+export async function createVoucherDebit (sale, referral, value) {
+  try {
+    const inserVoucherDebit = new PreparedStatement('insert-voucher-debit', CREATE_VOUCHER_DEBIT, [sale, referral, value])
+    return await db.oneOrNone(inserVoucherDebit)
+  } catch (error) {
+    throw error
+  }
+}

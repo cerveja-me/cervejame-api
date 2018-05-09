@@ -20,8 +20,10 @@ import httpStatus from 'http-status'
 import { apiErrorMessageConstant } from '../enums/apiErrorMessage.enum'
 import {
   voucherRules,
-  createSaleVoucher
+  createSaleVoucher,
+  createVoucherDebit
 } from '../voucher/voucher.services'
+import { getCostumer } from '../costumer/costumer.service'
 export function createSale (sale) {
   // return new Promise((resolve, reject) => {
   //   pool.connect((err, client, done) => {
@@ -73,7 +75,7 @@ export async function getSaleInfo (id) {
   try {
     return await db.one(getSale)
   } catch (error) {
-    // throw
+    throw error
   }
 }
 export async function validateVoucher (sale, saleSaved, profile) {
@@ -90,6 +92,24 @@ export async function validateVoucher (sale, saleSaved, profile) {
   }
 }
 
+export async function validateReferral (sale, saleSaved, profile) {
+  if (sale.friendRef) {
+    try {
+      let c = await getCostumer(profile.profile.id)
+      if (c.available_value >= sale.friendRef.available_value) {
+        await createVoucherDebit(saleSaved.id, c.id, sale.friendRef.available_value * -1)
+        return sale.friendRef.available_value
+      } else {
+        throw new ErrorHandler('identificamos uma tentativa de fraude, por favor entre em contato contato@cerveja.me!', 500, true, 1003)
+      }
+    } catch (error) {
+      console.log('errou -> ', error, profile)
+    }
+  } else {
+    return 0
+  }
+}
+
 export async function createSalePayment (idSale, paymentType, paymentValue) {
   const salePayment = new PreparedStatement('sale-payment', CREATE_SALE_PAYMENT, [idSale, paymentType, paymentValue])
   try {
@@ -97,23 +117,6 @@ export async function createSalePayment (idSale, paymentType, paymentValue) {
   } catch (error) {
 
   }
-  // return new Promise((resolve, reject) => {
-  //   const queryData = [idSale, paymentType, paymentValue]
-  //   pool.connect((err, client, done) => {
-  //     if (err) {
-  //       done()
-  //       reject(err)
-  //     }
-  //     client.query(CREATE_SALE_PAYMENT, queryData, (err, result) => {
-  //       if (err) {
-  //         done()
-  //         reject(err)
-  //       }
-  //       done()
-  //       resolve(apiTransactionMessage.TRANSACTION_COMMITED)
-  //     })
-  //   })
-  // })
 }
 
 export function createSaleAction (idSale, action) {
