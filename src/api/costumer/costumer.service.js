@@ -2,6 +2,8 @@ import { CREATE_COSTUMER, UPDATE_COSTUMER_PHONE, GET_COSTUMER_BY_ID, CREATE_MY_V
 import { generateVoucher } from './costumer.helper'
 import { PreparedStatement } from 'pg-promise'
 import db from '../../db/db'
+import { getCostumerData } from './costumer.controller'
+import ErrorHandler from '../../handlers/errorHandler'
 
 export async function createCostumer (costumer) {
   const insertCostumer = new PreparedStatement('insert-costumer', CREATE_COSTUMER, [costumer.id_profile, costumer.name, costumer.photo, costumer.email, costumer.phone])
@@ -37,6 +39,19 @@ export async function createMyVoucher (idCostumer, name) {
     let voucher = await db.one(insertVoucher)
     const updateCostVoucher = new PreparedStatement('update-cost-voucher', UPDATE_COSTUMER_VOUCHER, [voucher.id])
     return await db.one(updateCostVoucher)
+  } catch (error) {
+    throw error
+  }
+}
+
+export async function validateCostumerPhone (profile) {
+  try {
+    let costumer = await getCostumer(profile.profile.id)
+    if (costumer.phone) {
+      return true
+    } else {
+      throw new ErrorHandler('Informar o telefone', 500, true, 1004)
+    }
   } catch (error) {
     throw error
   }

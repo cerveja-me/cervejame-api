@@ -1,7 +1,10 @@
 import httpStatus from 'http-status'
 import apiTransactionMessage from '../enums/transactionMessage.enum'
 // import serviceCreateHPAction from '../hyperTrack/hyperTrack.service'
-import getCostumer from '../costumer/costumer.service'
+import {
+  getCostumer,
+  validateCostumerPhone}
+  from '../costumer/costumer.service'
 // import saleCreated from './sale.push'
 import {
   createSale,
@@ -48,7 +51,7 @@ export async function CheckoutSaleV2 (req, res, next) {
     await validadePayment(sale)
     // TODO validar se a venda já esta no pagamento
     const savedSale = await getSaleInfo(idSale)
-    console.log('VENDA -> ', sale)
+    const phone = await validateCostumerPhone(profile)
     const voucherDiscount = await validateVoucher(sale, savedSale, profile)
     const referralDiscount = await validateReferral(sale, savedSale, profile)
     console.log('descont -> ', voucherDiscount, referralDiscount)
