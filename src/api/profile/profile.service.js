@@ -19,7 +19,12 @@ export async function insertProfile (profile) {
   try {
     return await db.one(insertProf)
   } catch (error) {
-    throw error
+    switch (error.code) {
+      case '23505':
+        throw new ErrorHandler('Esse usuario já existe', 500, true, 1005)
+      default:
+        throw error
+    }
   }
 }
 

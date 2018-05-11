@@ -10,7 +10,14 @@ export async function createCostumer (costumer) {
   try {
     return await db.one(insertCostumer)
   } catch (error) {
-    throw error
+    switch (error.code) {
+      case '23505':
+        console.log('inser error')
+        throw new ErrorHandler('Esse usuario já existe', 500, true, 1005)
+      default:
+        console.log('erro ao cadastrar -> ', error)
+        throw error
+    }
   }
 }
 

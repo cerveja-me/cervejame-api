@@ -6,7 +6,7 @@ export async function UpdateProfileReq (req, res, next) {
     let r = await updateCostumer(phone, req.decoded.profile.id)
     res.json(r)
   } catch (error) {
-    res.status(500).json(error)
+    next(error)
   }
 }
 

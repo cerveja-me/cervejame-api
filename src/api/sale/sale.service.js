@@ -79,7 +79,6 @@ export async function getSaleInfo (id) {
   }
 }
 export async function validateVoucher (sale, saleSaved, profile) {
-  console.log('VALIDAR REGRAS', sale, saleSaved, profile)
   if (!sale.voucher) {
     return 0
   }
