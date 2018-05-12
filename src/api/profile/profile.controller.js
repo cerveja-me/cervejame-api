@@ -7,7 +7,6 @@ export async function createProfile (req, res, next) {
   try {
     profile.id_profile = await insertProfile(profile)
     profile.id_profile = profile.id_profile.id
-    console.log('profile -> ', profile)
     let costumer = await createCostumer(profile)
     if (profile.type === 2) {
       costumer = await createFacebook(profile)
@@ -16,7 +15,6 @@ export async function createProfile (req, res, next) {
       res.json(costumer)
     }
   } catch (error) {
-    console.log('eeee->', error)
     next(error)
   }
 }

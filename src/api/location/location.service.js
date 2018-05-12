@@ -69,5 +69,10 @@ export function transformTime (zone, time) {
     sch.day = base.getDay() === sch.open.getDay()
     return sch
   })
+  // TODO check if open yestarday or today  
+  // TODO ontem
+
+  // HJ
+
   return zone
 }

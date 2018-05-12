@@ -3,9 +3,10 @@ import { ruleConstant } from '../enums/rule.enum'
 import { apiTransactionMessage } from '../enums/transactionMessage.enum'
 import { apiErrorMessageConstant } from '../enums/apiErrorMessage.enum'
 import { errorConstant } from '../enums/error.enum'
-// import { getCostumer } from '../costumer/costumer.service'
+import { getCostumer } from '../costumer/costumer.service'
 import { PreparedStatement } from 'pg-promise'
 import db from '../../db/db'
+import ErrorHandler from '../../handlers/errorHandler'
 
 export async function findVoucherByCode (code) {
   const findVoucher = new PreparedStatement('find-voucher', FIND_VOUCHER)
@@ -27,102 +28,71 @@ export async function verifyVoucherActive (id) {
     return false
   }
 }
-// TODO
-// export function applyVoucher (sale, voucher, profile) {
-//   return new Promise(async (resolve, reject) => {
-//     const rule = voucher.rule
-//     let queryData = []
-//     let query
-//     let message
-//     switch (rule) {
-//       case ruleConstant.FIRST_BUY.code:
-//         query = VERIFY_VOUCHER_FIRST_BUY
-//         queryData = [profile.profile.id]
-//         message = errorConstant.FIRST_BUY
-//         break
-//       case ruleConstant.USER_LIMIT_1.code:
-//         query = VERIFY_VOUCHER_USER_LIMIT_1
-//         queryData = [profile.profile.id, voucher.id]
-//         message = errorConstant.USER_LIMIT_1
-//         break
-//       case ruleConstant.FRIEND_REF.code:
-//         try {
-//           c = await getCostumer(profile.profile.id)
-//           console.log(e)
-//           if (c.id === vouche.id) reject(new Error('Você não pode usar seu próprio CUPOM!'))
-//         } catch (error) {
-//           console.log(error)
-//         }
-//         query = VERIFY_VOUCHER_FIRST_BUY
-//         queryData = [profile.profile.id]
-//         message = errorConstant.FRIEND_REF
-//         break
-//       default:
-//         reject(new Error('Regra inválida'))
-//     }
-//     pool.connect((err, client, done) => {
-//       if (err) {
-//         done()
-//         reject(new Error(err.message))
-//       }
-//       pool.query(query, queryData, (err, result) => {
-//         if (err) {
-//           done()
-//           reject(new Error(err.message))
-//         }
-//         if (result.rows.length > 0) {
-//           console.log('result', result.rows)
-//           if (result.rows[0].total == 0) {
-//             pool.query(CREATE_SALE_VOUCHER, [sale, voucher.id, voucher.value], (err, result) => {
-//               if (err) {
-//                 done()
-//                 reject(new Error(err.message))
-//               }
-//               done()
-//               if (rule === ruleConstant.FRIEND_REF.code) {
-//                 pool.query(CREATE_VOUCHER_DEBIT, [sale, voucher.id, 10], (err, result) => {
-//                   if (err) {
-//                     done()
-//                     reject(new Error(err.message))
-//                   }
-//                   done()
-//                 })
-//               }
-//               resolve(apiTransactionMessage.TRANSACTION_COMMITED)
-//             })
-//           } else {
-//             reject(new Error(message))
-//           }
-//         } else {
-//           message = {
-//             code: 0,
-//             title: 'Erro',
-//             message: 'Não houve retorno da consulta',
-//             httpStatus: 400
-//           }
-//           reject(new Error(message))
-//         }
-//       })
-//     })
-//   })
-// }
 
-// TODO
-// export function createVoucherDebit (sale, referral, value) {
-//   return new Promise((resolve, reject) => {
-//     pool.connect((err, client, done) => {
-//       if (err) {
-//         done()
-//         reject(new Error(err.message))
-//       }
-//       pool.query(CREATE_VOUCHER_DEBIT, [sale, referral, value], (err, result) => {
-//         if (err) {
-//           done()
-//           reject(new Error(err.message))
-//         }
-//         done()
-//         resolve(apiTransactionMessage.TRANSACTION_COMMITED)
-//       })
-//     })
-//   })
-// }
+export async function voucherRules (sale, voucher, profile) {
+  const rule = voucher.rule
+  try {
+    switch (rule) {
+      case ruleConstant.FIRST_BUY.code:
+        const firstBuy = new PreparedStatement('first-buy-rule', VERIFY_VOUCHER_FIRST_BUY, [profile.profile.id])
+        if (parseInt((await db.one(firstBuy)).total) > 0) {
+          const e = ruleConstant.FIRST_BUY
+          throw new ErrorHandler(e.message, e.httpStatus, true, 1003)
+        } else {
+          return true
+        }
+      case ruleConstant.USER_LIMIT_1.code:
+        const userLimit = new PreparedStatement('one-buy-rule', VERIFY_VOUCHER_USER_LIMIT_1, [profile.profile.id, voucher.id])
+        if (parseInt((await db.one(userLimit))) > 0) {
+          const e = ruleConstant.USER_LIMIT_1
+          throw new ErrorHandler(e.message, e.httpStatus, true, 1003)
+        } else {
+          return true
+        }
+      case ruleConstant.FRIEND_REF.code:
+        try {
+          const c = await getCostumer(profile.profile.id)
+          if (c.id === voucher.id) {
+            throw new ErrorHandler('Você não pode usar seu próprio CUPOM!', ruleConstant.FRIEND_REF.httpStatus, true, 1004)
+          }
+        } catch (error) {
+          console.log(error)
+          throw error
+        }
+        const firstBuyRef = new PreparedStatement('first-buy-rule', VERIFY_VOUCHER_FIRST_BUY, [profile.profile.id])
+        if (parseInt((await db.one(firstBuyRef)).total) > 0) {
+          const e = ruleConstant.FIRST_BUY
+          throw new ErrorHandler(e.message, e.httpStatus, true, 1003)
+        } else {
+          return true
+        }
+      default:
+        throw new Error('Regra inválida')
+    }
+  } catch (error) {
+    console.log('error executed->', error)
+    throw error
+  }
+}
+
+export async function createSaleVoucher (sale, voucher, profile) {
+  try {
+    const insertSaleVoucher = new PreparedStatement('insert-sale-voucher', CREATE_SALE_VOUCHER, [sale.id, voucher.id, voucher.value])
+    let r = await db.oneOrNone(insertSaleVoucher)
+    if (voucher.rule === ruleConstant.FRIEND_REF.code) {
+      createVoucherDebit(sale.id, voucher.id, 10)
+    }
+    return r
+  } catch (error) {
+    throw error
+  }
+}
+
+export async function createVoucherDebit (sale, referral, value) {
+  try {
+    const inserVoucherDebit = new PreparedStatement('insert-voucher-debit', CREATE_VOUCHER_DEBIT, [sale, referral, value])
+    return await db.oneOrNone(inserVoucherDebit)
+  } catch (error) {
+    throw error
+  }
+}

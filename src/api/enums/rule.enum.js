@@ -16,5 +16,5 @@ export const ruleConstant = {
     message: 'Este cupom é para novatos no aplicativo',
     title: 'Eu já te conheço!',
     httpStatus: 400
-  },
+  }
 }
