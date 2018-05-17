@@ -8,7 +8,7 @@ export async function getAvailableActions (profile) {
     const openActions = new PreparedStatement('get-open-actions', GET_OPEN_ACTION, [profile.id_zone])
     let actions = await db.manyOrNone(openActions)
     console.log('openaction -> ', actions)
-    if (actions.length) {
+    if (!actions.length) {
       actions = actions.map(p => {
         if (p.length) {
           return p
@@ -24,6 +24,7 @@ export async function getAvailableActions (profile) {
         }
       })
     }
+    return actions
   } catch (error) {
     throw error
   }
