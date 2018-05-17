@@ -6,10 +6,10 @@ import { FIND_DEVICE_BY_ID, UPDATE_PROFILE_ID_ON_DEVICE, CREATE_DEVICE, FIND_DEV
 
 export async function insertDevice (device) {
   try {
-    const findDevice = new PreparedStatement('find-device', FIND_DEVICE)
-    findDevice.values = [device.device_uuid, device.app_name, device.install_uuid]
+    const findDevice = new PreparedStatement('find-device', FIND_DEVICE, [device.device_uuid, device.app_name, device.install_uuid])
+    // console.log('find -> ' )
     let dev = await db.one(findDevice)
-
+    console.log('DEV ---->  ', dev)
     const updateDevice = new PreparedStatement('update-device', UPDATE_DEVICE)
     updateDevice.values = [device.push_token, device.app_version, dev.id]
     dev = await db.one(updateDevice)
@@ -17,13 +17,15 @@ export async function insertDevice (device) {
     console.log('device -> ', dev)
     return dev
   } catch (error) {
+    console.log('ERRO -> ', error)
     try {
-      const insertDev = new PreparedStatement('insert-device', CREATE_DEVICE)
-      insertDev.values = [device.push_token, device.app_version, device.app_name, device.app_os, device.phone_model, device.device_uuid, device.install_uuid]
+      const insertDev = new PreparedStatement('insert-device', CREATE_DEVICE, [device.push_token, device.app_version, device.app_name, device.app_os, device.phone_model, device.device_uuid, device.install_uuid])
       let dev = await db.one(insertDev)
+
       console.log('inserido -> ', dev)
       return dev
     } catch (error) {
+      console.log('error -> ', error)
       throw new ErrorHandler(`Erro ao tentar cadastrar o perfil. Detalhe(s): ${error.detail}`, httpStatus.BAD_REQUEST, true, error.code)
     }
   }

@@ -12,9 +12,12 @@ export async function createDevice (req, res, next) {
     install_uuid: req.body.install_uuid
   }
   try {
+    console.log('D -> ', device)
     const d = await insertDevice(device)
+
     res.status(httpStatus.CREATED).json(d)
   } catch (error) {
+    console.log('error ', error)
     next(error)
   }
 }
