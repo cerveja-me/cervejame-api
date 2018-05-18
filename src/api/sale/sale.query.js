@@ -3,7 +3,7 @@ export const CONFIRM_SALE = `update public.sale set id_location=$1, id_product_z
 export const CREATE_SALE_ACTION = 'insert into public.action(id_sale, action) values ($1, $2) RETURNING id'
 export const CREATE_SALE_PAYMENT = 'insert into public.sale_payment(id_sale, payment_type, payment_value) values ($1, $2, $3) RETURNING id'
 export const GET_SALES = 'select * from view_get_sales_v2 where id_profile = $1 limit 1'
-export const SALE_DATA = `select c.name as costumer,c.phone as phone, p.name as product, d.push_token,s.amount,sp.payment_value as price,z.name as city,
+export const SALE_DATA = `select c.name as costumer,c.phone as phone, p.name as product, d.push_token,s.amount,s.freight_value, sp.payment_value as price,z.name as city,
 (SELECT array_to_json(array_agg(row_to_json(d_1.*))) AS array_to_json FROM(SELECT p.img,
     ps.amount,
     p.cold,
