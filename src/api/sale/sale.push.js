@@ -6,9 +6,9 @@ export async function saleCreated (id) {
   try {
     let details = await getSaleDetails(id)
     // console.log('details -> ', details)
-    // notifySeller(details.map(p => {
-    //   return p.push_token
-    // }))
+    notifySeller(details.map(p => {
+      return p.push_token
+    }))
     notifySlack(details[0])
   } catch (error) {
     // console.log('error notification ->', error)
