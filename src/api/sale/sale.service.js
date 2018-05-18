@@ -24,25 +24,25 @@ import {
   createVoucherDebit
 } from '../voucher/voucher.services'
 import { getCostumer } from '../costumer/costumer.service'
-export function createSale (sale) {
-  // return new Promise((resolve, reject) => {
-  //   pool.connect((err, client, done) => {
-  //     if (err) {
-  //       done()
-  //       reject(err)
-  //     }
-  //     client.query(CREATE_SALE, [sale.location, sale.product, sale.price, sale.amount, sale.amount_discount, sale.freight_value], (err, result) => {
-  //       if (err) {
-  //         done()
-  //         reject(err)
-  //       }
-  //       resolve(result.rows[0])
-  //     })
-  //   })
-  // })
-}
+// export function createSale (sale) {
+// return new Promise((resolve, reject) => {
+//   pool.connect((err, client, done) => {
+//     if (err) {
+//       done()
+//       reject(err)
+//     }
+//     client.query(CREATE_SALE, [sale.location, sale.product, sale.price, sale.amount, sale.amount_discount, sale.freight_value], (err, result) => {
+//       if (err) {
+//         done()
+//         reject(err)
+//       }
+//       resolve(result.rows[0])
+//     })
+//   })
+// })
+// }
 
-export async function createSaleV2 (sale) {
+export async function createSale (sale) {
   const price = sale.icebox.map(p => { return p.price * p.items }).reduce((a, b) => { return a + b })
   const items = sale.icebox.map(p => { return p.items }).reduce((a, b) => { return a + b })
   const insertSale = new PreparedStatement('insert-sale', CREATE_SALE, [sale.location, sale.icebox[0].id, price, items, sale.amount_discount || 0, sale.freight_value])
@@ -184,7 +184,14 @@ export async function getSales (userId) {
   }
 }
 
-export function getSaleDetails (idsale) {
+export async function getSaleDetails (idsale) {
+  try {
+    const getSaleDetail = new PreparedStatement('get-sale-detail', SALE_DATA, [idsale])
+    return await db.many(getSaleDetail)
+  } catch (error) {
+    throw error
+  }
+
   // return new Promise((resolve, reject) => {
   //   pool.connect((err, client, done) => {
   //     if (err) {

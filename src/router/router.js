@@ -6,6 +6,8 @@ import voucherRouter from '../api/voucher/voucher.router'
 import costumerRouter from '../api/costumer/costumer.router'
 import saleRouter from '../api/sale/sale.router'
 import rateRouter from '../api/rate/rate.route'
+import actionRouter from '../api/action/action.route'
+import productZoneRouter from '../api/productZone/productZone.route'
 
 const router = express.Router()
 
@@ -18,8 +20,13 @@ router.use('/rate', rateRouter)
 router.use('/location', locationRouter)
 router.use('/voucher', voucherRouter)
 router.use('/costumer', costumerRouter)
-
 router.use('/sale', saleRouter)
+
+// seller
+router.use('/action', actionRouter) // doing
+router.use('/productzone', productZoneRouter) // doing 
+// router.use('/notification', pushRouter) //doing 
+// router.use('/seller', sellerRouter) //doing
 
 router.use('/', (req, res) => {
   res.send('OK')
