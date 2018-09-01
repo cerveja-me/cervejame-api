@@ -12,10 +12,17 @@ if (NODE_ENV === 'development' || NODE_ENV === 'test') {
   server.use(morgan('combined'))
 }
 
-server.use(bodyParser.urlencoded({extended: true}))
+server.use(bodyParser.urlencoded({
+  extended: true
+}))
 server.use(bodyParser.json())
 server.use(cors())
 server.use(helmet())
+server.use(function (req, res, next) {
+  res.header('Acess-Control-Allow-Origin', '*')
+  res.header('Acess-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
+  res.header('Acess-Control-Allow-Headers', 'Content-Type')
+})
 server.use('/api/', router)
 server.use((err, req, res, next) => {
   res.status(err.status).json(err)
