@@ -44,7 +44,7 @@
     "camelize": "^1.0.0",
     "cors": "2.8.4",
     "decamelize": "^2.0.0",
-    "express": "4.15.5",
+    "express": "4.17.3",
     "helmet": "3.10.0",
     "http-status": "1.0.1",
     "joi": "^13.1.2",
